@@ -1,18 +1,37 @@
-function InvitationPreview({ template, guestNames}) {
+function InvitationPreview({ template, guestNames, namePosition, setNamePosition}) {
     const currentGuest = guestNames[guestNames.length -1];
+    const handleImageClick = (event) => {
+        const image = event.currentTarget;
+        const rect = event.currentTarget.getBoundingClientRect();
+
+        const x = ((event.clientX - rect.left) / rect.width) * 100;
+        const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+        setNamePosition({
+            x,
+            y,
+        });
+    };
 
   return (
     <main className="flex flex-1 items-center justify-center bg-white p-10">
      {template ? (
-        <div className="relative max-h-[80vh]">
+        <div 
+        className="relative">
         <img
         src={template}
         alt="Invitation preview"
-        className="max-h-[80vh] max-w-full object-contain"
+        onClick={handleImageClick}
+        className="max-h-[80vh] max-w-full cursor-crosshair object-contain"
         />
 
         {currentGuest && (
-            <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-semibold text-black">
+            <p 
+            className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 text-3xl font-semibold text-black"
+            style={{
+                left: `${namePosition.x}%` ,
+                top: `${namePosition.y}%` ,
+            }}>
             {currentGuest}
             </p>
         )}

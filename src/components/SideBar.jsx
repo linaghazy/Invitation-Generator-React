@@ -17,6 +17,8 @@ function Sidebar({ setTemplate, guestNames, setGuestNames }) {
       guestNames={guestNames}
       setGuestNames={setGuestNames}
       />
+
+      
     </aside>
   );
 }

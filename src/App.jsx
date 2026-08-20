@@ -6,7 +6,11 @@ import InvitationPreview from "./components/InvitationPreview";
 function App() {
 
   const [template, setTemplate] = useState(null);
-  const [guestNames, setGuestNames] = useState([]);
+  const [guestNames, setGuestNames] = useState([]); 
+  const [namePosition, setNamePosition] = useState({
+    x: 50,
+    y: 50,
+  });
 
   return (
     <div className="min-h-screen bg-white">
@@ -20,7 +24,9 @@ function App() {
         />
         <InvitationPreview 
         template={template}
-        guestNames={guestNames} />
+        guestNames={guestNames}
+        namePosition={namePosition}
+        setNamePosition={setNamePosition} />
       </div>
     </div>
   );
