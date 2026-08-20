@@ -1,5 +1,5 @@
-function InvitationPreview({ template, guestNames, namePosition, setNamePosition}) {
-    const currentGuest = guestNames[guestNames.length -1];
+function InvitationPreview({ template, selectedGuest, namePosition, setNamePosition}) {
+    
     const handleImageClick = (event) => {
         const image = event.currentTarget;
         const rect = event.currentTarget.getBoundingClientRect();
@@ -25,14 +25,14 @@ function InvitationPreview({ template, guestNames, namePosition, setNamePosition
         className="max-h-[80vh] max-w-full cursor-crosshair object-contain"
         />
 
-        {currentGuest && (
+        {selectedGuest && (
             <p 
             className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 text-3xl font-semibold text-black"
             style={{
                 left: `${namePosition.x}%` ,
                 top: `${namePosition.y}%` ,
             }}>
-            {currentGuest}
+            {selectedGuest}
             </p>
         )}
         </div>

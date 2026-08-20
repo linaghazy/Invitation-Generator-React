@@ -28,7 +28,6 @@ function App() {
         />
         <InvitationPreview 
         template={template}
-        guestNames={guestNames}
         selectedGuest={selectedGuest}
         namePosition={namePosition}
         setNamePosition={setNamePosition} />
