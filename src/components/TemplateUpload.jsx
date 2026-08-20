@@ -1,7 +1,4 @@
-import { useState } from "react";
-
-function TemplateUpload() {
-    const[template, setTemplate] = useState(null);
+function TemplateUpload({ setTemplate }) {
 
     const handleTemplateUpload = (event) => {
         const file = event.target.files[0];
@@ -31,14 +28,6 @@ function TemplateUpload() {
         onChange={handleTemplateUpload}
         className="hidden"
       />
-
-      {template && (
-        <img
-          src={template}
-          alt="Invitation template"
-          className="mt-5 w-full rounded-md object-contain"
-        />
-      )}
     </div>
   );
 }
