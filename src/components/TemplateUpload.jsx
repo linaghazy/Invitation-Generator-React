@@ -10,30 +10,37 @@ function TemplateUpload() {
             setTemplate(URL.createObjectURL(file));
         }
     };
-return (
-    <div className="template-upload">
-        <h3>Upload Template</h3>
 
-        <label htmlFor="templateInput" className="upload-button">
-            Choose Image
-        </label>
+    return (
+    <div className="mt-8">
+      <h3 className="mb-4 text-base font-medium">
+        Upload Template
+      </h3>
 
-        <input
+      <label
+        htmlFor="templateInput"
+        className="inline-block cursor-pointer rounded-md bg-white px-4 py-2 text-sm text-black transition hover:bg-gray-200"
+      >
+        Choose Image
+      </label>
+
+      <input
         id="templateInput"
         type="file"
         accept="image/*"
         onChange={handleTemplateUpload}
+        className="hidden"
+      />
+
+      {template && (
+        <img
+          src={template}
+          alt="Invitation template"
+          className="mt-5 w-full rounded-md object-contain"
         />
-
-        {template && (
-            <img
-            src={template}
-            alt="Invitation template"
-            className="template-preview"
-            />
-        )}
+      )}
     </div>
-);
-
+  );
 }
-export default TemplateUpload; 
+
+export default TemplateUpload;
