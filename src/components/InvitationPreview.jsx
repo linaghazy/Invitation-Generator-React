@@ -1,7 +1,8 @@
 function InvitationPreview() {
   return (
-    <main className="preview">
-      <h2>Invitation Preview</h2>
+    <main className="flex-1 p-10 flex items-center justify-center">
+      <h2 className="text-2xl">
+        Invitation Preview</h2>
     </main>
   );
 }

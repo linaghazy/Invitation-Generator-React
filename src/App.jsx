@@ -1,20 +1,16 @@
-import "./App.css"; 
-
 import TopBar from "./components/TopBar";
 import Sidebar from "./components/SideBar";
 import InvitationPreview from "./components/InvitationPreview";
 
-
-
 function App() {
   return (
-    <div className="app">
+    <div className="min-h-screen bg-white">
       <TopBar />
-      
-      <div className="main">
+
+      <div className="flex min-h-[calc(100vh-60px)]">
         <Sidebar />
         <InvitationPreview />
-        </div> 
+      </div>
     </div>
   );
 }
