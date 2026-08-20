@@ -1,7 +1,19 @@
+import "./App.css"; 
+
+import TopBar from "./components/TopBar";
+import Sidebar from "./components/SideBar";
+import InvitationPreview from "./components/InvitationPreview";
+
+
+
 function App() {
   return (
-    <div>
-      <h1>Invitation Generator</h1>
+    <div className="app">
+      <TopBar />
+      <div className="main">
+        <Sidebar />
+        <InvitationPreview />
+        </div> 
     </div>
   );
 }
