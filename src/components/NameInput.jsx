@@ -3,9 +3,15 @@ import { useState } from "react";
 
 function NameInput() {
     const[name, setName] = useState(" ");
+    const[guestNames, setGuestNames] = useState([]);
 
     const handleAddName= () => {
-        console.log(name);
+        if (name.trim() === " ") {
+            return;
+        }
+
+        setGuestNames([...guestNames, name]);
+        setName(" ");
     };
 
     return (
@@ -28,6 +34,18 @@ function NameInput() {
             >
                 Add Name 
             </button>
+
+            <div className="mt-6">
+                <h3 className="mb-3 text-base font-medium">
+                    Recipients 
+                </h3>
+
+                {guestNames.map((guest, index) => (
+                    <p key={index} className="mb-2 text-gray-300">
+                        {guest}
+                    </p>
+                ))}
+            </div>
 
         </div>
     );
