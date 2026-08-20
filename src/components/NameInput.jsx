@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 
-function NameInput({ guestNames, setGuestNames }) {
+function NameInput({ guestNames, setGuestNames, selectedGuest, setSelectedGuest }) {
     const[name, setName] = useState(" ");
 
     const handleAddName= () => {
@@ -40,9 +40,18 @@ function NameInput({ guestNames, setGuestNames }) {
                 </h3>
 
                 {guestNames.map((guest, index) => (
-                    <p key={index} className="mb-2 text-gray-300">
+                    <button
+                    key={index}
+                    onClick={() => setSelectedGuest(guest)}
+                    className={`mb-2 block w-full rounded-md px-3 py-2 text-left text-sm transition ${
+                        selectedGuest === guest
+        ? "bg-white text-black"
+        : "bg-[#1c1c1c] text-gray-300 hover:bg-[#2a2a2a]"
+                    }`}
+                    >
                         {guest}
-                    </p>
+                    </button>
+                    
                 ))}
             </div>
 
