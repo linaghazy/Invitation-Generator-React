@@ -1,3 +1,4 @@
+import CsvUpload from "./CsvUpload";
 import TemplateUpload from "./TemplateUpload";
 import NameInput from "./NameInput";
 import { useState } from "react"; 
@@ -53,11 +54,12 @@ function Sidebar({ setTemplate, guestNames, setGuestNames, selectedGuest, setSel
   )}
 
   {inputMode === "csv" && (
-    <div className="mt-4 rounded-md border border-[#444748] p-4">
-      <p className="text-sm text-gray-400">
-        CSV upload will go here.
-      </p>
-    </div>
+    <CsvUpload
+    guestNames={guestNames}
+    setGuestNames={setGuestNames}
+    selectedGuest={selectedGuest}
+    setSelectedGuest={selectedGuest}
+        />
   )}
 </div>
 
