@@ -6,6 +6,7 @@ import InvitationPreview from "./components/InvitationPreview";
 function App() {
 
   const [template, setTemplate] = useState(null);
+  const [guestNames, setGuestNames] = useState([]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -14,8 +15,12 @@ function App() {
       <div className="flex min-h-[calc(100vh-60px)]">
         <SideBar 
         setTemplate={setTemplate}
+        guestNames={guestNames}
+        setGuestNames={setGuestNames}
         />
-        <InvitationPreview template={template} />
+        <InvitationPreview 
+        template={template}
+        guestNames={guestNames} />
       </div>
     </div>
   );

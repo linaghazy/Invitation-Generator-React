@@ -4,7 +4,7 @@ import NameInput from "./NameInput";
 
 
 
-function Sidebar({ setTemplate }) {
+function Sidebar({ setTemplate, guestNames, setGuestNames }) {
   return (
     <aside className="w-80 min-h-full bg-[#121212] p-6 text-white border-r border-[#444748]">
       <h2 className="text-lg">
@@ -13,7 +13,10 @@ function Sidebar({ setTemplate }) {
 
       <TemplateUpload setTemplate={setTemplate} />
 
-      <NameInput />
+      <NameInput 
+      guestNames={guestNames}
+      setGuestNames={setGuestNames}
+      />
     </aside>
   );
 }
