@@ -10,6 +10,7 @@ function App() {
   return (
     <div className="app">
       <TopBar />
+      
       <div className="main">
         <Sidebar />
         <InvitationPreview />
