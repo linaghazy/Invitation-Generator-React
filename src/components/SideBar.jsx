@@ -1,4 +1,8 @@
 import TemplateUpload from "./TemplateUpload";
+import NameInput from "./NameInput";
+
+
+
 
 function Sidebar() {
   return (
@@ -8,6 +12,8 @@ function Sidebar() {
       </h2>
 
       <TemplateUpload />
+
+      <NameInput />
     </aside>
   );
 }
