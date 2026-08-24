@@ -124,7 +124,7 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames }) {
 
         {selectedGuest && (
             <p 
-            className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 text-3xl font-semibold text-black"
+            className="pointer-events-none absolute w-[400px] -translate-x-1/2 -translate-y-1/2 break-words text-center text-3xl font-semibold text-black"
             style={{
                 left: `${namePosition.x}%` ,
                 top: `${namePosition.y}%` ,
