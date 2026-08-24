@@ -1,11 +1,13 @@
 import { useState } from "react";
+
 function InvitationPreview({ template, selectedGuest }) {
     const [namePosition, setNamePosition] = useState({
         x: 50,
         y: 50,
        });
+
     const handleImageClick = (event) => {
-        const image = event.currentTarget;
+    
         const rect = event.currentTarget.getBoundingClientRect();
 
         const x = ((event.clientX - rect.left) / rect.width) * 100;
@@ -18,8 +20,10 @@ function InvitationPreview({ template, selectedGuest }) {
     };
 
   return (
-    <main className="flex flex-1 items-center justify-center bg-white p-10">
+    <main className="flex flex-1 flex-col items-center justify-center bg-white p-10">
      {template ? (
+        <>
+
         <div 
         className="relative">
         <img
@@ -40,6 +44,12 @@ function InvitationPreview({ template, selectedGuest }) {
             </p>
         )}
         </div>
+        <button
+        className="mt-6 rounded-md bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+        >
+            Generate & Download 
+        </button>
+        </>
      ) : (
         <p className="text-gray-400">
             Upload an invitation template to preview it.
