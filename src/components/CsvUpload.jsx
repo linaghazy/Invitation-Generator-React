@@ -1,10 +1,16 @@
+import { useState } from "react";
+
 function CsvUpload({ guestNames, setGuestNames, selectedGuest, setSelectedGuest }) {
+  const [fileName, setFileName] = useState("");
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-
+    
     if (!file) {
       return;
     }
+
+    setFileName(file.name);
+
 const reader = new FileReader();
 
 reader.onload = (e) => {
@@ -40,6 +46,12 @@ reader.readAsText(file);
             className="hidden"
           />
         </label>
+
+        {fileName && (
+  <p className="mt-3 text-center text-sm text-gray-300">
+    {fileName}
+  </p>
+)}
 
         <p className="mt-3 text-center text-xs text-gray-500">
           Upload a CSV file containing one guest name per row.
