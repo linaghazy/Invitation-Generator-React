@@ -7,6 +7,8 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], }) {
         y: 50,
        });
 
+       const [textBoxWidth, setTextBoxWidth] = useState(70);
+
     const [previewWidth, setPreviewWidth] = useState(0);
     const imageRef = useRef(null);
 
@@ -22,6 +24,34 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], }) {
             y,
         });
     };
+
+    const handleResize = (event) => {
+  event.stopPropagation();
+
+  const image = imageRef.current;
+
+  if (!image) {
+    return;
+  }
+
+  const rect = image.getBoundingClientRect();
+
+   const boxLeft =
+    (namePosition.x / 100) * rect.width -
+    (textBoxWidth / 100) * rect.width / 2;
+
+  const newWidth =
+    ((event.clientX - rect.left - boxLeft) / rect.width) * 100;
+
+  const limitedWidth = Math.min(
+    Math.max(newWidth, 20),
+    95
+  );
+
+  setTextBoxWidth(limitedWidth);
+};
+
+
 
     useEffect(() => {
         
@@ -44,7 +74,7 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], }) {
         };
     }, [template]);
 
-    const getTextLayout = (width, guest) => {
+    const getTextLayout = (width, guest, boxWidth = 70) => {
         if (!width) {
             return {
                 lines: [guest],
@@ -52,7 +82,7 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], }) {
                 lineHeight: 37,
             };
         }
-        const textBoxWidth = width * 0.7;
+        const textBoxWidth = width * (boxWidth / 100);
 
         let fontSize = width * 0.05;
 
@@ -231,7 +261,8 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], }) {
   const textLayout = 
   selectedGuest ? getTextLayout(
     previewWidth || 600,
-    selectedGuest
+    selectedGuest,
+    textBoxWidth
   )
   : null;
   
@@ -260,23 +291,48 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], }) {
         />
 
         {selectedGuest && textLayout && (
-            <div
-            className="pointer-events-none absolute w-[70%] -translate-x-1/2 -translate-y-1/2 text-center font-semibold text-black"
-            style={{
-                left: `${namePosition.x}%` ,
-                top: `${namePosition.y}%` ,
-                fontSize: `${textLayout.fontSize}px` ,
-                lineHeight: `${textLayout.lineHeight}px` ,
-            }}>
+  <div
+    className="absolute -translate-x-1/2 -translate-y-1/2 border border-dashed border-gray-500"
+    style={{
+      left: `${namePosition.x}%`,
+      top: `${namePosition.y}%`,
+      width: `${textBoxWidth}%`,
+    }}
+  >
+    <div
+      className="pointer-events-none text-center font-semibold text-black"
+      style={{
+        fontSize: `${textLayout.fontSize}px`,
+        lineHeight: `${textLayout.lineHeight}px`,
+      }}
+    >
+      {textLayout.lines.map((line, index) => (
+        <div key={index}>
+          {line}
+        </div>
+      ))}
+    </div>
 
-                {textLayout.lines.map((line, index) => (
-                    <div key={index}>
-                        {line}
-                    </div>
-                ))}
-                </div> 
+    <button
+      type="button"
+      onPointerDown={(event) => {
+        event.stopPropagation();
+        event.currentTarget.setPointerCapture(event.pointerId);
+      }}
+      onPointerMove={(event) => {
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+          handleResize(event);
+        }
+      }}
+      onPointerUp={(event) => {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }}
+      className="absolute -bottom-2 -right-2 h-4 w-4 cursor-se-resize rounded-full bg-black"
+    />
+  </div>
         )}
         </div>
+
         <button
         type="button"
         onClick={handleDownload}
