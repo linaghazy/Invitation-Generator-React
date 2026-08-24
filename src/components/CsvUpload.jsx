@@ -53,9 +53,11 @@ reader.readAsText(file);
   </p>
 )}
 
-        <p className="mt-3 text-center text-xs text-gray-500">
-          Upload a CSV file containing one guest name per row.
-        </p>
+        {!fileName && (
+  <p className="mt-3 text-center text-xs text-gray-500">
+    Upload a CSV file containing one guest name per row.
+  </p>
+)}
       </div>
 
       {guestNames.length > 0 && (
