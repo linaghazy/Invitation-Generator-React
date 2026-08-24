@@ -1,4 +1,4 @@
-function CsvUpload({ guestNames, setGuestNames, setSelectedGuest }) {
+function CsvUpload({ guestNames, setGuestNames, selectedGuest, setSelectedGuest }) {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
 
@@ -56,7 +56,7 @@ reader.readAsText(file);
               key={index}
               onClick={() => setSelectedGuest(guest)}
               className={`mb-2 block w-full rounded-md px-3 py-2 text-left text-sm transition ${
-                setSelectedGuest === guest 
+                selectedGuest === guest 
                   ? "bg-white text-black"
                   : "bg-[#1c1c1c] text-gray-300 hover:bg-[#2a2a2a]"
               }`}

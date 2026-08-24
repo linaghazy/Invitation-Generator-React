@@ -1,5 +1,9 @@
-function InvitationPreview({ template, selectedGuest, namePosition, setNamePosition}) {
-    
+import { useState } from "react";
+function InvitationPreview({ template, selectedGuest }) {
+    const [namePosition, setNamePosition] = useState({
+        x: 50,
+        y: 50,
+       });
     const handleImageClick = (event) => {
         const image = event.currentTarget;
         const rect = event.currentTarget.getBoundingClientRect();

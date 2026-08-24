@@ -5,8 +5,12 @@ import { useState } from "react";
 
 
 
-function Sidebar({ setTemplate, guestNames, setGuestNames, selectedGuest, setSelectedGuest }) {
-    const [inputMode, setInputMode] = useState("manual")
+function Sidebar({ setTemplate, selectedGuest, setSelectedGuest }) {
+  const [manualGuestNames, setManualGuestNames] = useState([]);
+  const [csvGuestNames, setCsvGuestNames] = useState([]);
+  const [inputMode, setInputMode] = useState("manual");
+
+
   return (
     <aside className="w-80 min-h-full bg-[#121212] p-6 text-white border-r border-[#444748]">
       <h2 className="text-lg">
@@ -46,8 +50,8 @@ function Sidebar({ setTemplate, guestNames, setGuestNames, selectedGuest, setSel
 
   {inputMode === "manual" && (
     <NameInput
-      guestNames={guestNames}
-      setGuestNames={setGuestNames}
+      guestNames={manualGuestNames}
+      setGuestNames={setManualGuestNames}
       selectedGuest={selectedGuest}
       setSelectedGuest={setSelectedGuest}
     />
@@ -55,10 +59,10 @@ function Sidebar({ setTemplate, guestNames, setGuestNames, selectedGuest, setSel
 
   {inputMode === "csv" && (
     <CsvUpload
-    guestNames={guestNames}
-    setGuestNames={setGuestNames}
+    guestNames={csvGuestNames}
+    setGuestNames={setCsvGuestNames}
     selectedGuest={selectedGuest}
-    setSelectedGuest={selectedGuest}
+    setSelectedGuest={setSelectedGuest}
         />
   )}
 </div>

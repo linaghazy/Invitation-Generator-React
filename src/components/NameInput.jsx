@@ -2,15 +2,15 @@ import { useState } from "react";
 
 
 function NameInput({ guestNames, setGuestNames, selectedGuest, setSelectedGuest }) {
-    const[name, setName] = useState(" ");
+    const[name, setName] = useState("");
 
     const handleAddName= () => {
-        if (name.trim() === " ") {
+        if (name.trim() === "") {
             return;
         }
 
         setGuestNames([...guestNames, name]);
-        setName(" ");
+        setName("");
     };
 
     return (
