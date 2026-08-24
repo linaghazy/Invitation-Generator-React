@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import JSZip from "jszip"; 
 
-function InvitationPreview({ template, selectedGuest, csvGuestNames }) {
+function InvitationPreview({ template, selectedGuest, csvGuestNames = [], }) {
     const [namePosition, setNamePosition] = useState({
         x: 50,
         y: 50,
        });
+
+    const [previewWidth, setPreviewWidth] = useState(0);
+    const imageRef = useRef(null);
 
     const handleImageClick = (event) => {
     
@@ -19,6 +22,89 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames }) {
             y,
         });
     };
+
+    useEffect(() => {
+        
+        if (!template) {
+            return;
+        }
+
+        const updateWidth = () => {
+            if (imageRef.current) {
+                setPreviewWidth(imageRef.current.getBoundingClientRect().width);
+            }
+        };
+
+        updateWidth();
+
+        window.addEventListener("resize", updateWidth);
+
+        return () => {
+            window.removeEventListener("resize", updateWidth);
+        };
+    }, [template]);
+
+    const getTextLayout = (width, guest) => {
+        if (!width) {
+            return {
+                lines: [guest],
+                fontSize: 32,
+                lineHeight: 37,
+            };
+        }
+        const textBoxWidth = width * 0.7;
+
+        let fontSize = width * 0.05;
+
+        if (fontSize > 60) {
+            fontSize = 60;
+        }
+
+        if (fontSize < 18) {
+            fontSize = 18;
+        }
+
+
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    context.font = `600 ${fontSize}px Arial`;
+
+    const words = guest.split(" ");
+    const lines = [];
+    let currentLine = "";
+
+    words.forEach((word) => {
+      const testLine = currentLine
+        ? `${currentLine} ${word}`
+        : word;
+
+      const textWidth = context.measureText(testLine).width;
+
+      if (textWidth <= textBoxWidth) {
+        currentLine = testLine;
+      } else {
+        if (currentLine) {
+          lines.push(currentLine);
+        }
+
+        currentLine = word;
+      }
+    });
+
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+
+    return {
+      lines,
+      fontSize,
+      lineHeight: fontSize * 1.15,
+    };
+  };
+    
+
+    
 
     const createInvitationBlob = (image, guest) => {
         return new Promise((resolve) => {
@@ -39,12 +125,24 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames }) {
       const x = (namePosition.x / 100) * canvas.width;
       const y = (namePosition.y / 100) * canvas.height;
 
-      context.font = "600 48px Arial";
+      const layout = getTextLayout(canvas.width, guest);
+
+
+      context.font = `600 ${layout.fontSize}px Arial`;
       context.fillStyle = "black";
       context.textAlign = "center";
       context.textBaseline = "middle";
 
-      context.fillText(guest, x, y);
+
+      const startY = y - ((layout.lines.length - 1) * layout.lineHeight) / 2;
+
+      layout.lines.forEach((line, index) => {
+        context.fillText(
+           line,
+           x,
+           startY + index * layout.lineHeight
+  );
+});
 
       canvas.toBlob(resolve, "image/png");
     });
@@ -56,8 +154,7 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames }) {
             return;
         }
 
-        const guests = 
-        csvGuestNames.length > 0
+        const guests = Array.isArray(csvGuestNames) && csvGuestNames.length > 0
         ? csvGuestNames
         : selectedGuest
         ?[selectedGuest]
@@ -76,36 +173,68 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames }) {
             for (const guest of guests) {
                 const blob = await createInvitationBlob(image, guest);
 
+
+             if (blob){
                 zip.file(`${guest}-invitation.png`, blob);
 
+             }
             }
             const zipBlob = await zip.generateAsync({
               type: "blob",
             });
 
             const link = document.createElement("a");
-        link.href = URL.createObjectURL(zipBlob);
-        link.download = "invitations.zip";
-        link.click();
+            const url = URL.createObjectURL(zipBlob);
 
-        URL.revokeObjectURL(link.href);
+        link.href = url;
+        link.download = "invitations.zip";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+        }, 1000);
+
       } else {
         const blob = await createInvitationBlob(
           image,
           selectedGuest
         );
 
+        if (!blob) {
+            return;
+        }
+ 
         const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
+
+        link.href = url;
         link.download = `${selectedGuest}-invitation.png`;
+
+        document.body.appendChild(link);
+        link.remove();
         link.click();
 
-        URL.revokeObjectURL(link.href);
+
+     setTimeout(() => {
+ URL.revokeObjectURL(link.href);
+     }, 1000);
+       
       }
     };
 
     image.src = template;
   };
+
+  const textLayout = 
+  selectedGuest ? getTextLayout(
+    previewWidth || 600,
+    selectedGuest
+  )
+  : null;
+  
 
 
   return (
@@ -116,24 +245,40 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames }) {
         <div 
         className="relative">
         <img
+        ref={imageRef}
         src={template}
         alt="Invitation preview"
         onClick={handleImageClick}
+        onLoad={() => {
+            if (imageRef.current) {
+                setPreviewWidth(
+                    imageRef.current.getBoundingClientRect().width
+                );
+            }
+        }}
         className="max-h-[80vh] max-w-full cursor-crosshair object-contain"
         />
 
-        {selectedGuest && (
-            <p 
-            className="pointer-events-none absolute w-[400px] -translate-x-1/2 -translate-y-1/2 break-words text-center text-3xl font-semibold text-black"
+        {selectedGuest && textLayout && (
+            <div
+            className="pointer-events-none absolute w-[70%] -translate-x-1/2 -translate-y-1/2 text-center font-semibold text-black"
             style={{
                 left: `${namePosition.x}%` ,
                 top: `${namePosition.y}%` ,
+                fontSize: `${textLayout.fontSize}px` ,
+                lineHeight: `${textLayout.lineHeight}px` ,
             }}>
-            {selectedGuest}
-            </p>
+
+                {textLayout.lines.map((line, index) => (
+                    <div key={index}>
+                        {line}
+                    </div>
+                ))}
+                </div> 
         )}
         </div>
         <button
+        type="button"
         onClick={handleDownload}
         className="mt-6 rounded-md bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
         >
