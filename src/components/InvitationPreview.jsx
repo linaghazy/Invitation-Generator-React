@@ -19,6 +19,44 @@ function InvitationPreview({ template, selectedGuest }) {
         });
     };
 
+    const handleDownload = () => {
+        if(!template || !selectedGuest) {
+            return;
+        }
+
+        const image = new Image();
+
+        image.onload = () =>{
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+
+            canvas.width = image.naturalWidth;
+            canvas.height = image.naturalHeight;
+
+            context.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight);
+
+            const x = (namePosition.x / 100) * canvas.width;
+            const y = (namePosition.y / 100) * canvas.height;
+
+            context.font = "600 48px Arial";
+            context.fillStyle = "black";
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+
+            
+
+            context.fillText(selectedGuest, x, y);
+
+            const link = document.createElement("a");
+            link.download = `${selectedGuest}-ivitation.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+
+
+        };
+    image.src = template;
+     };
+
   return (
     <main className="flex flex-1 flex-col items-center justify-center bg-white p-10">
      {template ? (
@@ -45,6 +83,7 @@ function InvitationPreview({ template, selectedGuest }) {
         )}
         </div>
         <button
+        onClick={handleDownload}
         className="mt-6 rounded-md bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
         >
             Generate & Download 
