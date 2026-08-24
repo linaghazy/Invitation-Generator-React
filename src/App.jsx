@@ -8,6 +8,8 @@ function App() {
   const [template, setTemplate] = useState(null);
   
   const [selectedGuest, setSelectedGuest] = useState(null);
+
+  const [csvGuestNames, setCsvGuestNames] = useState([]);
   
 
   return (
@@ -19,11 +21,14 @@ function App() {
         setTemplate={setTemplate}
         selectedGuest={selectedGuest}
         setSelectedGuest={setSelectedGuest}
+        csvGuestNames={csvGuestNames}
+        setCsvGuestNames={setCsvGuestNames}
         />
 
         <InvitationPreview 
         template={template}
         selectedGuest={selectedGuest}
+        csvGuestNames={csvGuestNames}
         />
       </div>
     </div>

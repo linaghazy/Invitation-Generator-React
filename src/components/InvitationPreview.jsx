@@ -1,6 +1,7 @@
 import { useState } from "react";
+import JSZip from "jszip"; 
 
-function InvitationPreview({ template, selectedGuest }) {
+function InvitationPreview({ template, selectedGuest, csvGuestNames }) {
     const [namePosition, setNamePosition] = useState({
         x: 50,
         y: 50,
@@ -19,43 +20,93 @@ function InvitationPreview({ template, selectedGuest }) {
         });
     };
 
+    const createInvitationBlob = (image, guest) => {
+        return new Promise((resolve) => {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+
+      context.drawImage(
+        image,
+        0,
+        0,
+        image.naturalWidth,
+        image.naturalHeight
+      );
+
+      const x = (namePosition.x / 100) * canvas.width;
+      const y = (namePosition.y / 100) * canvas.height;
+
+      context.font = "600 48px Arial";
+      context.fillStyle = "black";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+
+      context.fillText(guest, x, y);
+
+      canvas.toBlob(resolve, "image/png");
+    });
+
+    };
+
     const handleDownload = () => {
-        if(!template || !selectedGuest) {
+        if(!template) {
+            return;
+        }
+
+        const guests = 
+        csvGuestNames.length > 0
+        ? csvGuestNames
+        : selectedGuest
+        ?[selectedGuest]
+        : [];
+
+        if (guests.length === 0) {
             return;
         }
 
         const image = new Image();
 
-        image.onload = () =>{
-            const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d");
+        image.onload = async () => {
+            if (csvGuestNames.length > 0) {
+                const zip = new JSZip();
 
-            canvas.width = image.naturalWidth;
-            canvas.height = image.naturalHeight;
+            for (const guest of guests) {
+                const blob = await createInvitationBlob(image, guest);
 
-            context.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight);
+                zip.file(`${guest}-invitation.png`, blob);
 
-            const x = (namePosition.x / 100) * canvas.width;
-            const y = (namePosition.y / 100) * canvas.height;
-
-            context.font = "600 48px Arial";
-            context.fillStyle = "black";
-            context.textAlign = "center";
-            context.textBaseline = "middle";
-
-            
-
-            context.fillText(selectedGuest, x, y);
+            }
+            const zipBlob = await zip.generateAsync({
+              type: "blob",
+            });
 
             const link = document.createElement("a");
-            link.download = `${selectedGuest}-ivitation.png`;
-            link.href = canvas.toDataURL("image/png");
-            link.click();
+        link.href = URL.createObjectURL(zipBlob);
+        link.download = "invitations.zip";
+        link.click();
 
+        URL.revokeObjectURL(link.href);
+      } else {
+        const blob = await createInvitationBlob(
+          image,
+          selectedGuest
+        );
 
-        };
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${selectedGuest}-invitation.png`;
+        link.click();
+
+        URL.revokeObjectURL(link.href);
+      }
+    };
+
     image.src = template;
-     };
+  };
+
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center bg-white p-10">

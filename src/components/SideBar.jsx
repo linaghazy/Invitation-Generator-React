@@ -5,9 +5,8 @@ import { useState } from "react";
 
 
 
-function Sidebar({ setTemplate, selectedGuest, setSelectedGuest }) {
+function Sidebar({ setTemplate, selectedGuest, setSelectedGuest, csvGuestNames, setCsvGuestNames }) {
   const [manualGuestNames, setManualGuestNames] = useState([]);
-  const [csvGuestNames, setCsvGuestNames] = useState([]);
   const [inputMode, setInputMode] = useState("manual");
 
 
