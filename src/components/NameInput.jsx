@@ -40,22 +40,55 @@ function NameInput({ guestNames, setGuestNames, selectedGuest, setSelectedGuest 
                 </h3>
 
                 {guestNames.map((guest, index) => (
-                    <button
+                    <div
                     key={index}
+                    className="mb-2 flex items-center justify-between rounded-md bg-[#1c1c1c] px-3 py-2"
+                    >
+                    <button
                     onClick={() => setSelectedGuest(guest)}
-                    className={`mb-2 block w-full rounded-md px-3 py-2 text-left text-sm transition ${
+                    className={`flex-1 text-left text-sm ${
                         selectedGuest === guest
-        ? "bg-white text-black"
-        : "bg-[#1c1c1c] text-gray-300 hover:bg-[#2a2a2a]"
+        ? "text-white"
+        : "text-gray-300"
                     }`}
                     >
                         {guest}
                     </button>
-                    
-                ))}
+
+                    <button
+                    onClick={() => {
+                        const updatedNames = guestNames.filter(
+                            (_, i) => i !== index
+                        );
+
+                        setGuestNames(updatedNames);
+
+                        if (selectedGuest === guest) {
+                            setSelectedGuest(null);
+                        }
+                    }}
+                    className="ml-3 text-gray-400 hover:text-white"
+                    >
+                       ✕ 
+                    </button>
             </div>
 
-        </div>
+                ))}
+                {guestNames.length > 0 && (
+                    <button 
+                    onClick={() =>{
+                        setGuestNames([]);
+                        setSelectedGuest(null);
+                    }
+
+                    }
+                    className="mt-2 w-full rounded-md bg-[#1c1c1c] px-3 py-2 text-gray-400 hover:bg-[#2a2a2a] hover:text-white"
+                    >
+                        Clear All 
+                    </button>
+                )}
+                </div>
+                </div>
     );
 }
 export default NameInput;
