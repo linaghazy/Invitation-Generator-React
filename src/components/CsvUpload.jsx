@@ -13,7 +13,8 @@ reader.onload = (e) => {
     const names = text
     .split(/\r?\n/)
     .map((name) => name.trim())
-    .filter((name) => name !== " ");
+    .filter((name) => name !== "")
+    .filter((name) => name.toLowerCase() !== "name");
 
     setGuestNames(names);
 
