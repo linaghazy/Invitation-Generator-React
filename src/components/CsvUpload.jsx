@@ -26,7 +26,7 @@ function CsvUpload({
         .split(/\r?\n/)
         .map((name) => name.trim())
         .filter((name) => name !== "")
-        .filter((name) => name.toLowerCase() !== "name");
+        .filter((name) => name.toLowerCase() !== "name" && name.toLowerCase() !== "guest name" );
 
       setGuestNames(names);
 
@@ -38,6 +38,26 @@ function CsvUpload({
     reader.readAsText(file);
   };
 
+  const handleDownloadTemplate = () => {
+    const csvContent = "Guest Name\n";
+
+    const blob = new Blob([csvContent], {
+      type: "text/csv",
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "guest-template.csv";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="mt-8">
       <h3 className="mb-4 text-base font-medium">
@@ -45,8 +65,16 @@ function CsvUpload({
       </h3>
 
       <div className="rounded-md border border-[#444748] p-4">
+
+        <button
+        type="button"
+        onClick={handleDownloadTemplate}
+        className="mb-3 w-full rounded-md bg-[#1c1c1c] px-4 py-2 text-sm text-white transition hover:bg-[#2a2a2a]"
+        >
+          Download Guest List Template 
+        </button>
         <label className="block cursor-pointer rounded-md bg-white px-4 py-2 text-center text-sm font-medium text-black transition hover:bg-gray-200">
-          Choose CSV File
+          Upload Guest List 
 
           <input
             type="file"
@@ -64,7 +92,7 @@ function CsvUpload({
 
         {!fileName && (
           <p className="mt-3 text-center text-xs text-gray-500">
-            Upload a CSV file containing one guest name per row.
+            Download the template, enter one guest name per row, save the file, then upload it here.
           </p>
         )}
       </div>

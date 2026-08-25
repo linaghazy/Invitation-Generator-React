@@ -43,7 +43,7 @@ function Sidebar({ setTemplate, selectedGuest, setSelectedGuest, csvGuestNames, 
           : "bg-[#1c1c1c] text-gray-400 hover:bg-[#2a2a2a]"
       }`}
     >
-      Upload CSV
+      Enter Guest List 
     </button>
   </div>
 
