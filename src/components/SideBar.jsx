@@ -5,7 +5,7 @@ import { useState } from "react";
 
 
 
-function Sidebar({ setTemplate, selectedGuest, setSelectedGuest, csvGuestNames, setCsvGuestNames, fontSettings, setFontSettings, }) {
+function Sidebar({ setTemplate, selectedGuest, setSelectedGuest, csvGuestNames, setCsvGuestNames, fontSettings, setFontSettings, onCustomFontUpload }) {
   const [manualGuestNames, setManualGuestNames] = useState([]);
   const [inputMode, setInputMode] = useState("manual");
 
@@ -108,6 +108,35 @@ function Sidebar({ setTemplate, selectedGuest, setSelectedGuest, csvGuestNames, 
     <option value="Dancing Script">Dancing Script</option>
   </optgroup>
       </select>
+
+      <div className="mt-4">
+  <label className="mb-2 block text-sm font-medium">
+    Custom Font
+  </label>
+
+  <label className="block cursor-pointer rounded-md border border-[#444748] bg-[#1c1c1c] px-3 py-2 text-center text-sm text-white transition hover:bg-[#2a2a2a]">
+    Upload Font
+
+    <input
+      type="file"
+      accept=".woff,.woff2,.ttf,.otf"
+      onChange={onCustomFontUpload}
+      className="hidden"
+    />
+  </label>
+{!fontSettings.customFont && (
+<p className="mt-2 text-xs text-gray-500">
+  Please upload a .ttf, .otf, .woff, or .woff2 font file.
+</p>
+)}
+
+
+  {fontSettings.customFont && (
+    <p className="mt-2 text-xs text-gray-400">
+      {fontSettings.customFont}
+    </p>
+  )}
+</div>
     </div>
 
     <div>

@@ -18,8 +18,50 @@ function App() {
     color: "#000000",
     letterSpacing: 0,
     lineHeight:1.15,
+    customFont: "",
   });
   
+  const handleCustomFontUpload = async (event) => {
+    const file = event?.target?.files?.[0];
+
+    if (!file) {
+      console.log("No font file selected");
+      return;
+    }
+    
+
+    try {
+
+      const fontName = `CustomFont-${Date.now()}`;
+
+      const fontUrl = URL.createObjectURL(file);
+
+      const font = new FontFace(
+        fontName,
+         `url("${fontUrl}")`
+      );
+
+       await font.load();
+
+      document.fonts.add(font);
+
+      console.log("FONT LOADED:", fontName);
+      console.log("FILE:", file.name);
+
+
+      setFontSettings((previous) => ({
+        ...previous,
+        family: fontName,
+        customFont: file.name,
+        weight: 400,
+      }));
+
+  
+  } catch (error) {
+    console.error("CUSTOM FONT ERROR:", error);
+  }
+    
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -34,6 +76,7 @@ function App() {
         setCsvGuestNames={setCsvGuestNames}
         fontSettings={fontSettings}
         setFontSettings={setFontSettings}
+        onCustomFontUpload={handleCustomFontUpload}
         />
 
         <InvitationPreview 
