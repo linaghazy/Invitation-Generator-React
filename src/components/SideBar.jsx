@@ -13,7 +13,7 @@ function Sidebar({ setTemplate, selectedGuest, setSelectedGuest, csvGuestNames, 
   
 
   return (
-    <aside className="w-80 min-h-full bg-[#121212] p-6 text-white border-r border-[#444748]">
+    <aside className="w-full bg-[#121212] text-white md:w-[320px]"> 
       <h2 className="text-lg">
         Invitation Generator
       </h2>
@@ -21,7 +21,7 @@ function Sidebar({ setTemplate, selectedGuest, setSelectedGuest, csvGuestNames, 
       <TemplateUpload setTemplate={setTemplate} />
 
       <div className="mt-8">
-  <h3 className="mb-3 text-sm font-medium text-gray-300">
+  <h3 className="mb-4 text-base font-medium text-gray-300">
     Guest Names
   </h3>
 

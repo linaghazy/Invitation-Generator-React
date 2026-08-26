@@ -306,7 +306,7 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], fontSe
 
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center bg-white p-10">
+    <main className="flex min-w-0 flex-1 flex-col items-center justify-start bg-white p-4 sm:p-6 md:justify-center md:p-10">
      {template ? (
         <>
 
@@ -324,7 +324,7 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], fontSe
                 );
             }
         }}
-        className="max-h-[80vh] max-w-full cursor-crosshair object-contain"
+        className="max-h-[65vh] w-auto max-w-full cursor-crosshair object-contain sm:max-h-[70vh] md:max-h-[80vh]"
         />
 
         {selectedGuest && textLayout && (

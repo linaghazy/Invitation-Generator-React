@@ -67,7 +67,8 @@ function App() {
     <div className="min-h-screen bg-white">
       <TopBar />
 
-      <div className="flex min-h-[calc(100vh-60px)]">
+      <div className="flex min-h-screen flex-col md:flex-row">
+        <div className="order-2 w-full md:order-1 md:w-[320px] md:shrink-0">
         <SideBar 
         setTemplate={setTemplate}
         selectedGuest={selectedGuest}
@@ -78,7 +79,8 @@ function App() {
         setFontSettings={setFontSettings}
         onCustomFontUpload={handleCustomFontUpload}
         />
-
+     </div>
+     <div className="order-1 flex min-w-0 flex-1 md:order-2">
         <InvitationPreview 
         template={template}
         selectedGuest={selectedGuest}
@@ -86,6 +88,7 @@ function App() {
         fontSettings={fontSettings}
         />
       </div>
+    </div>
     </div>
   );
 }
