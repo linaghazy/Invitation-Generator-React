@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import JSZip from "jszip"; 
 
-function InvitationPreview({ template, selectedGuest, csvGuestNames = [], }) {
+function InvitationPreview({ template, selectedGuest, csvGuestNames = [], fontSettings, }) {
     const [namePosition, setNamePosition] = useState({
         x: 50,
         y: 50,
@@ -77,28 +77,20 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], }) {
     const getTextLayout = (width, guest, boxWidth = 70) => {
         if (!width) {
             return {
-                lines: [guest],
-                fontSize: 32,
-                lineHeight: 37,
+                lines,
+                fontSize,
+                lineHeight: fontSettings.lineHeight * fontSize,
             };
         }
         const textBoxWidth = width * (boxWidth / 100);
 
-        let fontSize = width * 0.05;
-
-        if (fontSize > 60) {
-            fontSize = 60;
-        }
-
-        if (fontSize < 18) {
-            fontSize = 18;
-        }
+        let fontSize = fontSettings.size; 
 
 
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
 
-    context.font = `600 ${fontSize}px Arial`;
+    context.font = `${fontSettings.weight} ${fontSize}px ${fontSettings.family}`;
 
     const words = guest.split(" ");
     const lines = [];
@@ -300,10 +292,14 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], }) {
     }}
   >
     <div
-      className="pointer-events-none text-center font-semibold text-black"
+      className="pointer-events-none text-center"
       style={{
-        fontSize: `${textLayout.fontSize}px`,
-        lineHeight: `${textLayout.lineHeight}px`,
+        fontFamily: fontSettings.family,
+        fontSize: `${fontSettings.size}px`,
+        fontWeight: fontSettings.weight,
+        color: fontSettings.color,
+        letterSpacing: `${fontSettings.letterSpacing}px`,
+        lineHeight: `${fontSettings.lineHeight}`,
       }}
     >
       {textLayout.lines.map((line, index) => (

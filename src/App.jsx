@@ -10,6 +10,15 @@ function App() {
   const [selectedGuest, setSelectedGuest] = useState(null);
 
   const [csvGuestNames, setCsvGuestNames] = useState([]);
+
+  const [fontSettings, setFontSettings] = useState({
+    family: "Arial",
+    size: 32,
+    weight: 600,
+    color: "#000000",
+    letterSpacing: 0,
+    lineHeight:1.15,
+  });
   
 
   return (
@@ -23,12 +32,15 @@ function App() {
         setSelectedGuest={setSelectedGuest}
         csvGuestNames={csvGuestNames}
         setCsvGuestNames={setCsvGuestNames}
+        fontSettings={fontSettings}
+        setFontSettings={setFontSettings}
         />
 
         <InvitationPreview 
         template={template}
         selectedGuest={selectedGuest}
         csvGuestNames={csvGuestNames}
+        fontSettings={fontSettings}
         />
       </div>
     </div>
