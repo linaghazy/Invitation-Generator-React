@@ -14,7 +14,7 @@ function App() {
   const [fontSettings, setFontSettings] = useState({
     family: "Arial",
     size: 32,
-    weight: 600,
+    weight: 400,
     color: "#000000",
     letterSpacing: 0,
     lineHeight:1.15,

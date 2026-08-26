@@ -36,15 +36,14 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], fontSe
 
   const rect = image.getBoundingClientRect();
 
-   const boxLeft =
-    (namePosition.x / 100) * rect.width -
-    (textBoxWidth / 100) * rect.width / 2;
+   const boxCenterX =
+    rect.left + (namePosition.x / 100) * rect.width;
 
   const newWidth =
-    ((event.clientX - rect.left - boxLeft) / rect.width) * 100;
+    ((event.clientX - boxCenterX) * 2 / rect.width) * 100;
 
   const limitedWidth = Math.min(
-    Math.max(newWidth, 20),
+    Math.max(newWidth, 10),
     95
   );
 
@@ -74,25 +73,32 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], fontSe
         };
     }, [template]);
 
-    const getTextLayout = (width, guest, boxWidth = 70) => {
-        if (!width) {
-            return {
-                lines,
-                fontSize,
-                lineHeight: fontSettings.lineHeight * fontSize,
-            };
-        }
-        const textBoxWidth = width * (boxWidth / 100);
+    const getTextLayout = (width, guest, boxWidth = textBoxWidth, fontScale = 1 ) => {
 
-        let fontSize = fontSettings.size; 
+      const fontSize = fontSettings.size * fontScale;
 
+      const letterSpacing =
+    fontSettings.letterSpacing * fontScale;
 
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
 
     context.font = `${fontSettings.weight} ${fontSize}px ${fontSettings.family}`;
 
-    const words = guest.split(" ");
+    const maxWidth = width * (boxWidth / 100);
+
+    const getTextWidth = (text) => {
+   const baseWidth = context.measureText(text).width;
+
+    const spacing =
+      Math.max(text.length - 1, 0) * letterSpacing;
+
+    return baseWidth + spacing;
+  };
+        
+
+
+    const words = guest.trim().split(/\s+/);
     const lines = [];
     let currentLine = "";
 
@@ -101,9 +107,8 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], fontSe
         ? `${currentLine} ${word}`
         : word;
 
-      const textWidth = context.measureText(testLine).width;
 
-      if (textWidth <= textBoxWidth) {
+        if (getTextWidth(testLine) <= maxWidth) {
         currentLine = testLine;
       } else {
         if (currentLine) {
@@ -114,6 +119,7 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], fontSe
       }
     });
 
+
     if (currentLine) {
       lines.push(currentLine);
     }
@@ -121,14 +127,49 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], fontSe
     return {
       lines,
       fontSize,
-      lineHeight: fontSize * 1.15,
+      letterSpacing,
+      lineHeight: fontSettings.lineHeight * fontSize,
     };
   };
     
 
-    
+    const drawTextWithLetterSpacing = (
+  context,
+  text,
+  x,
+  y,
+  letterSpacing
+) => {
+  if (letterSpacing === 0) {
+    context.fillText(text, x, y);
+    return;
+  }
 
-    const createInvitationBlob = (image, guest) => {
+  const characters = [...text];
+
+  const totalTextWidth =
+    context.measureText(text).width +
+    letterSpacing * (characters.length - 1);
+
+  let currentX = x - totalTextWidth / 2;
+
+  characters.forEach((character) => {
+    context.textAlign = "left";
+
+    context.fillText(character, currentX, y);
+
+    currentX +=
+      context.measureText(character).width +
+      letterSpacing;
+  });
+
+  context.textAlign = "center";
+};
+
+    const createInvitationBlob = async (image, guest) => {
+      await document.fonts.load(
+  `${fontSettings.weight} ${fontSettings.size}px "${fontSettings.family}"`
+);
         return new Promise((resolve) => {
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("2d");
@@ -146,12 +187,14 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], fontSe
 
       const x = (namePosition.x / 100) * canvas.width;
       const y = (namePosition.y / 100) * canvas.height;
+      
+      const scale = canvas.width / previewWidth;
 
-      const layout = getTextLayout(canvas.width, guest);
+      const layout = getTextLayout(canvas.width, guest, textBoxWidth, scale);
 
 
-      context.font = `600 ${layout.fontSize}px Arial`;
-      context.fillStyle = "black";
+      context.font = `${fontSettings.weight} ${layout.fontSize}px "${fontSettings.family}"`;
+      context.fillStyle = fontSettings.color;
       context.textAlign = "center";
       context.textBaseline = "middle";
 
@@ -159,10 +202,12 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], fontSe
       const startY = y - ((layout.lines.length - 1) * layout.lineHeight) / 2;
 
       layout.lines.forEach((line, index) => {
-        context.fillText(
-           line,
-           x,
-           startY + index * layout.lineHeight
+        drawTextWithLetterSpacing(
+          context,
+          line,
+          x, 
+          startY + index * layout.lineHeight,
+          fontSettings.letterSpacing * scale
   );
 });
 
@@ -292,14 +337,14 @@ function InvitationPreview({ template, selectedGuest, csvGuestNames = [], fontSe
     }}
   >
     <div
-      className="pointer-events-none text-center"
+      className="pointer-events-none text-center text-black"
       style={{
-        fontFamily: fontSettings.family,
-        fontSize: `${fontSettings.size}px`,
+        fontFamily: `"${fontSettings.family}"`,
+        fontSize: `${textLayout.fontSize}px`,
         fontWeight: fontSettings.weight,
         color: fontSettings.color,
         letterSpacing: `${fontSettings.letterSpacing}px`,
-        lineHeight: `${fontSettings.lineHeight}`,
+        lineHeight: `${textLayout.lineHeight}px`,
       }}
     >
       {textLayout.lines.map((line, index) => (
